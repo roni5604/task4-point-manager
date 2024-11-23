@@ -1,6 +1,7 @@
 // src/App.js
 import React, { useState } from 'react';
 import Point from './Point';
+import Plot from 'react-plotly.js';
 import './App.css';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
     const newPoint = new Point(x, y);
     setPoints([...points, newPoint]);
     setFormData({ x: '', y: '' });
+    setTotalDistance(null); // Reset total distance when a new point is added
   };
 
   const calculateTotalDistance = () => {
@@ -42,6 +44,10 @@ function App() {
     }
     setTotalDistance(distance);
   };
+
+  // Prepare data for the plot
+  const xValues = points.map((point) => point.x);
+  const yValues = points.map((point) => point.y);
 
   return (
     <div className="App">
@@ -75,6 +81,26 @@ function App() {
           {totalDistance !== null && (
             <p>Total Distance: {totalDistance.toFixed(2)}</p>
           )}
+          <h3>Graph:</h3>
+          <Plot
+            data={[
+              {
+                x: xValues,
+                y: yValues,
+                type: 'scatter',
+                mode: 'lines+markers',
+                marker: { color: 'red' },
+                line: { shape: 'linear' },
+              },
+            ]}
+            layout={{
+              width: 600,
+              height: 500,
+              title: 'Point Path',
+              xaxis: { title: 'X-axis' },
+              yaxis: { title: 'Y-axis' },
+            }}
+          />
         </div>
       )}
     </div>
